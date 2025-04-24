@@ -61,7 +61,7 @@ bash
 Copy
 Edit
 # Clone the repository
-git clone https://github.com/serijkhan/User-Management-Application.git
+git clone https://github.com/Amjad0786/User-Management-Application
 cd User-Management-Application
 
 # Configure your database
@@ -72,7 +72,7 @@ Copy
 Edit
 mvn clean install
 mvn spring-boot:run
-📍 Visit the app at: http://localhost:7001/login
+📍 Visit the app at: http://localhost:8081/login
 
 
 🧪 Usage.
