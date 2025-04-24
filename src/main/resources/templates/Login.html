@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0f7fa, #a7ffeb);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .login-container {
+            max-width: 600px;
+            padding: 50px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.7s ease-in-out;
+            position: relative;
+        }
+
+        .login-container h2 {
+            font-size: 36px;
+            color: #008080;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .form-label {
+            color: #333333;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #b2dfdb;
+            padding: 16px;
+            font-size: 18px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #008080;
+            box-shadow: 0 0 6px rgba(0, 128, 128, 0.4);
+        }
+
+        .btn-primary {
+            background-color: #008080;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #004d40;
+        }
+
+        .d-grid {
+            margin-top: 25px;
+        }
+
+        .text-center small a {
+            color: #008080;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .text-center small a:hover {
+            text-decoration: underline;
+        }
+
+        .alert-danger {
+            background-color: #ffccbc;
+            color: #d84315;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Marquee Style Fix */
+        .marquee {
+            width: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+            color: #008080;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .marquee-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marqueeAnimation 15s linear infinite;
+        }
+
+        @keyframes marqueeAnimation {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Popup Animation */
+        .popup {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            font-size: 22px;
+            font-weight: bold;
+            color: #004d40;
+            z-index: 9999;
+            opacity: 0;
+            animation: popupAnimation 1.2s ease-out forwards;
+        }
+
+        @keyframes popupAnimation {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Popup Message -->
+    <div class="popup" id="welcomePopup">
+        Welcome To Amjad IT World!
+    </div>
+
+    <div class="container login-container">
+        <!-- Marquee Section -->
+        <div class="marquee">
+            <div class="marquee-text">🚀 Empowering Innovation at Amjad IT World - Your Tech Journey Begins Here! 🌍</div>
+        </div>
+
+        <h2>Welcome Back!</h2>
+        
+        <!-- Error Alert -->
+        <div th:if="${errMsg}" class="alert alert-danger text-center" role="alert">
+            <span th:text="${errMsg}"></span>
+        </div>
+
+        <!-- Login Form -->
+        <form th:action="@{/login}" th:object="${loginDTO}" method="post">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Enter your email" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+            <div class="mb-3">
+                <label for="pwd" class="form-label">Password</label>
+                <input type="password" class="form-control" id="pwd" th:field="*{pwd}" placeholder="Enter your password" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('pwd')}" th:errors="*{pwd}"></div>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </div>
+        </form>
+
+        <div class="text-center">
+            <small style="font-size: 20px; font-weight: bold; color: #004d40;">Don't have an account? <a th:href="@{/register}">Sign Up</a></small>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Auto-hide popup after few seconds -->
+    <script>
+        setTimeout(() => {
+            const popup = document.getElementById('welcomePopup');
+            if (popup) {
+                popup.style.display = 'none';
+            }
+        }, 4000); // hide after 4 seconds
+    </script>
+
+</body>
+</html>

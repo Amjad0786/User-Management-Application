@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding-top: 40px;
+            background: linear-gradient(135deg, #e0f7fa, #80cbc4);
+            min-height: 100vh;
+        }
+
+        .login-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.7s ease-in-out;
+        }
+
+        h2 {
+            font-size: 32px;
+            color: #00695c;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Modern CSS Marquee */
+        .marquee {
+            width: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 12px 0;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .marquee-text {
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 22px;
+            font-weight: bold;
+            color: #004d40;
+            animation: marqueeAnimation 12s linear infinite;
+        }
+
+        @keyframes marqueeAnimation {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .form-label {
+            color: #004d40;
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid #b2dfdb;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: #00897b;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .text-center small a {
+            color: #004d40;
+            font-weight: 600;
+        }
+
+        .popup-success {
+            position: fixed;
+            top: 20px;
+            right: 50px;
+            z-index: 9999;
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            animation: fadeInSlide 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Success Message Popup -->
+    <div th:if="${sucMsg}" class="popup-success" th:text="${sucMsg}"></div>
+
+    <div class="container">
+        <div class="login-container">
+
+            <!-- Marquee Message -->
+            <div class="marquee">
+                <div class="marquee-text">📝 Please fill in your registration details carefully and accurately!</div>
+            </div>
+
+            <h2>Register Here</h2>
+
+            <div th:if="${emailMsg}" class="alert alert-danger text-center" th:text="${emailMsg}"></div>
+
+            <form th:action="@{/insert}" th:object="${user}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" th:field="*{name}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" th:field="*{email}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" th:field="*{phno}" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Country</label>
+                    <select th:field="*{countryId}" class="form-select" id="countrySelect" required>
+                        <option value="">-Select-</option>
+                        <option th:each="country : ${countries}" th:value="${country.id}" th:text="${country.name}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">State</label>
+                    <select th:field="*{stateId}" class="form-select" id="stateSelect" required>
+                        <option value="">-Select-</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">City</label>
+                    <select th:field="*{cityId}" class="form-select" id="citySelect" required>
+                        <option value="">-Select-</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign-Up</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <small style="font-size: 20px; font-weight: bold; color: #004d40;">Have an account?
+                    <a th:href="@{/login}" style="font-size: 20px; font-weight: bold; color: #008080;">Sign in</a>
+                </small>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#countrySelect').change(function () {
+                const countryId = $(this).val();
+                $('#stateSelect').empty().append(new Option("-Select-", ""));
+                $('#citySelect').empty().append(new Option("-Select-", ""));
+                if (countryId) {
+                    $.get(`/states/${countryId}`, function (data) {
+                        data.forEach(state => {
+                            $('#stateSelect').append(new Option(state.name, state.id));
+                        });
+                    });
+                }
+            });
+
+            $('#stateSelect').change(function () {
+                const stateId = $(this).val();
+                $('#citySelect').empty().append(new Option("-Select-", ""));
+                if (stateId) {
+                    $.get(`/cities/${stateId}`, function (data) {
+                        data.forEach(city => {
+                            $('#citySelect').append(new Option(city.name, city.id));
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
